@@ -88,6 +88,10 @@ public class SpongeMod extends DummyModContainer implements PluginContainer {
     private LoadController controller;
     private SpongeModGameRegistry registry;
 
+    public static final String ADD_BASE_EVENT = "addBaseEvent";
+    public static final String GET_BASE_EVENTS = "getBaseEvents";
+    public static final String FACTORY_METHOD = "fromSpongeEvent";
+
     // This is a special Mod, provided by the IFMLLoadingPlugin. It will be
     // instantiated before FML scans the system for mods (or plugins)
     public SpongeMod() {

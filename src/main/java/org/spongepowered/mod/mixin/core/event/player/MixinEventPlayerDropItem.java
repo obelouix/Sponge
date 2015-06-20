@@ -24,6 +24,7 @@
  */
 package org.spongepowered.mod.mixin.core.event.player;
 
+import com.google.common.collect.Iterables;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.event.entity.item.ItemEvent;
@@ -35,17 +36,15 @@ import org.spongepowered.api.item.inventory.ItemStack;
 import org.spongepowered.api.util.annotation.NonnullByDefault;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.mod.interfaces.IMixinEvent;
+import org.spongepowered.mod.mixin.core.event.entity.item.MixinEventItem;
 
 import java.util.Collection;
 import java.util.Collections;
 
 @NonnullByDefault
 @Mixin(value = ItemTossEvent.class, remap = false)
-public abstract class MixinEventPlayerDropItem extends ItemEvent implements PlayerDropItemEvent {
-
-    public MixinEventPlayerDropItem(EntityItem itemEntity) {
-        super(itemEntity);
-    }
+public abstract class MixinEventPlayerDropItem extends MixinEventItem implements PlayerDropItemEvent {
 
     @Shadow
     public EntityPlayer player;
@@ -63,5 +62,11 @@ public abstract class MixinEventPlayerDropItem extends ItemEvent implements Play
     @Override
     public Player getUser() {
         return (Player) this.player;
+    }
+
+    private static ItemTossEvent fromSpongeEvent(PlayerDropItemEvent spongeEvent) {
+        ItemTossEvent event = new ItemTossEvent((EntityItem) Iterables.getFirst(spongeEvent.getDroppedItems(), null), (EntityPlayer) spongeEvent.getEntity());
+        ((IMixinEvent) event).setSpongeEvent(spongeEvent);
+        return event;
     }
 }
